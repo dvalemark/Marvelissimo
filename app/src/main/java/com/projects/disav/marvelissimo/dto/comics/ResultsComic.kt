@@ -1,4 +1,4 @@
-package com.projects.disav.marvelissimo.comics
+package com.projects.disav.marvelissimo.dto.comics
 
 import com.projects.disav.marvelissimo.dto.characters.Thumbnail
 
