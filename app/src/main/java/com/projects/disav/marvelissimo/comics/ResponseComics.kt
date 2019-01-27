@@ -1,4 +1,3 @@
 package com.projects.disav.marvelissimo.comics
 
-class ResponseSeries {
-}
+data class ResponseComics (val data: ComicData)
