@@ -1,4 +1,4 @@
-package com.projects.disav.marvelissimo.api
+package com.projects.disav.marvelissimo.network.api
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

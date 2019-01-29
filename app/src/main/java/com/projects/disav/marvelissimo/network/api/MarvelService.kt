@@ -1,9 +1,8 @@
-package com.projects.disav.marvelissimo.api
+package com.projects.disav.marvelissimo.network.api
 
-import com.projects.disav.marvelissimo.dto.characters.CharacterDataWrapper
+import com.projects.disav.marvelissimo.network.api.dto.characters.CharacterDataWrapper
 import io.reactivex.Single
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MarvelService {
