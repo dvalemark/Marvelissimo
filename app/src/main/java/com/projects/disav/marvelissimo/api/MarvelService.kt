@@ -12,5 +12,4 @@ interface MarvelService {
 
     @GET("characters")
     fun getCharactersByNameContaining(@Query("nameStartsWith") nameStart: String): Single<CharacterDataWrapper>
-
 }
