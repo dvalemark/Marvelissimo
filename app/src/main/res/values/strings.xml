@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Marvelissimo</string>
+    <string name="api_key">490e9405e90d6cdf7f823da1d81c7972</string>
+    <string name="hash">52e42a722bdb19550e304cd646af3fbc</string>
 </resources>
