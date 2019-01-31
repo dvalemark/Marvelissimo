@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.projects.disav.marvelissimo.ResultLayout.MyActivity
+import com.projects.disav.marvelissimo.ResultLayout.FragmentListComicCharacters
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,9 +23,12 @@ class MainActivity : AppCompatActivity() {
 
         button_click.setOnClickListener {
             // Handler code here.
-            val intent = Intent(this, MyActivity::class.java)
-            startActivity(intent)
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_content, FragmentListComicCharacters())
+            transaction.commit()
         }
+
+
     }
 
 }
