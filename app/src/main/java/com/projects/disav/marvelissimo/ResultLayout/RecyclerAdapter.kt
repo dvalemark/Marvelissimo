@@ -47,9 +47,9 @@ class RecyclerAdapter(private val characters: List<Character>): RecyclerView.Ada
         override fun onClick(v: View) {
 
             val context = itemView.context
-            val showPhotoIntent = Intent(context, ItemActivity::class.java)
-            showPhotoIntent.putExtra(CHARACTER_KEY, character)
-            context.startActivity(showItemIntent)
+            val showCharacterIntent = Intent(context, MyActivity::class.java)
+            showCharacterIntent.putExtra(CHARACTER_KEY, character?.id)
+            context.startActivity(showCharacterIntent)
         }
 
         companion object {
@@ -61,7 +61,7 @@ class RecyclerAdapter(private val characters: List<Character>): RecyclerView.Ada
             this.character = character
             Picasso.with(view.context).load(character.thumbnail.path).into(view.itemImage)
             view.itemName.text = character.name
-            view.itemDescription.text = character.id
+            view.itemDescription.text = character.name
         }
     }
 }
