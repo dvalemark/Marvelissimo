@@ -1,4 +1,4 @@
-package com.projects.disav.marvelissimo.ResultLayout
+package com.projects.disav.marvelissimo.ui.searchresults.characters
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,24 +7,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.projects.disav.marvelissimo.R
+import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.characters.Character
-import com.projects.disav.marvelissimo.network.api.dto.characters.Thumbnail
-import kotlinx.android.synthetic.main.recyclerview.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*
 
-class FragmentListComicCharacters: Fragment() {
+class FragmentCharacterList: Fragment() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
-    private lateinit var adapter: RecyclerAdapter
-    var charactersList = mutableListOf<Character>()
+    private lateinit var adapter: RecyclerAdapterCharacter
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
 
-        charactersList.add(Character(123,"Deadpool", Thumbnail("https://m.media-amazon.com/images/S/aplus-media/sota/589a3469-2183-4eee-9840-05bc57475126._SR285,285_.png")))
-        charactersList.add(Character(234,"Marvel", Thumbnail("https://m.media-amazon.com/images/S/aplus-media/sota/589a3469-2183-4eee-9840-05bc57475126._SR285,285_.png")))
+        MarvelHandler.service.getAllCharacters()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { wrapper -> adapter.characters = wrapper.data.results
+                adapter.notifyDataSetChanged()}
 
 
         val view = inflater.inflate(R.layout.recyclerview, container, false)
@@ -32,7 +36,7 @@ class FragmentListComicCharacters: Fragment() {
         linearLayoutManager = LinearLayoutManager(activity)
         view.my_recycler_view.layoutManager = linearLayoutManager
 
-        adapter = RecyclerAdapter(charactersList)
+        adapter = RecyclerAdapterCharacter()
         view.my_recycler_view.adapter = adapter
 
         return view
