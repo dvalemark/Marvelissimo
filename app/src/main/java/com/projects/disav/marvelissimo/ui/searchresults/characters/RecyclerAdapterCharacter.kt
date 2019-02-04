@@ -11,7 +11,7 @@ import com.projects.disav.marvelissimo.network.api.dto.characters.Character
 import kotlinx.android.synthetic.main.card_for_list_character.view.*
 import kotlinx.android.synthetic.main.card_for_list_comic.view.*
 
-class RecyclerAdapterCharacter( var characters: List<Character> =listOf()): RecyclerView.Adapter<RecyclerAdapterCharacter.ItemHolder>() {
+class RecyclerAdapterCharacter( var characters: List<Character> =listOf(), val clickListener: (Character) -> Unit): RecyclerView.Adapter<RecyclerAdapterCharacter.ItemHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapterCharacter.ItemHolder {
 
@@ -25,7 +25,8 @@ class RecyclerAdapterCharacter( var characters: List<Character> =listOf()): Recy
 
     override fun onBindViewHolder(holder: RecyclerAdapterCharacter.ItemHolder, position: Int) {
         val itemCharacter = characters[position]
-        holder.bindPhoto(itemCharacter)
+
+        holder.bindCharacter(itemCharacter, clickListener)
     }
 
 
@@ -49,11 +50,12 @@ class RecyclerAdapterCharacter( var characters: List<Character> =listOf()): Recy
             private val CHARACTER_KEY = "Character"
         }
 
-        fun bindPhoto(character: Character) {
+        fun bindCharacter(character: Character, clickListener: (Character) -> Unit ) {
             this.character = character
             Picasso.with(view.context).load(character.thumbnail.path+"."+character.thumbnail.extension)
                 .into(view.characterImage)
             view.characterName.text = character.name
+            view.setOnClickListener { clickListener(character)}
         }
     }
 }

@@ -7,7 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.projects.disav.marvelissimo.ui.searchresults.characters.FragmentCharacterList
-import com.projects.disav.marvelissimo.network.api.MarvelHandler
+import com.projects.disav.marvelissimo.network.api.dto.characters.Character
 import com.projects.disav.marvelissimo.ui.Startframe.FragmentStartFrame
 import com.projects.disav.marvelissimo.ui.searchresults.comics.FragmentComicList
 import io.reactivex.schedulers.Schedulers
@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity() {
             else -> return super.onOptionsItemSelected(item)
         }
     }
+
+
+
+
 }
 
 

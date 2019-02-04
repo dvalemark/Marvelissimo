@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.characters.Character
@@ -41,7 +42,7 @@ class FragmentCharacterList: Fragment(){
         linearLayoutManager = LinearLayoutManager(activity)
         view.my_recycler_view.layoutManager = linearLayoutManager
 
-        adapter = RecyclerAdapterCharacter()
+        adapter = RecyclerAdapterCharacter(clickListener ={ character : Character -> itemClicked(character)})
         view.my_recycler_view.adapter = adapter
 
         return view
@@ -74,6 +75,10 @@ class FragmentCharacterList: Fragment(){
 
 
         super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun itemClicked(character : Character) {
+        println(character.name)
     }
 
 
