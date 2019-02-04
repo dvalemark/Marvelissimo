@@ -21,6 +21,7 @@ class FragmentCharacterList: Fragment(){
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerAdapterCharacter
+    private lateinit var adapterShowOne: AdapterShowOneCharacter
 
 
     override fun onCreateView(
@@ -77,8 +78,11 @@ class FragmentCharacterList: Fragment(){
         super.onPrepareOptionsMenu(menu)
     }
 
-    private fun itemClicked(character : Character) {
-        println(character.name)
+    private fun itemClicked(character : Character): View? {
+        adapterShowOne = AdapterShowOneCharacter(character)
+        view?.my_recycler_view?.adapter = adapterShowOne
+
+        return view
     }
 
 
