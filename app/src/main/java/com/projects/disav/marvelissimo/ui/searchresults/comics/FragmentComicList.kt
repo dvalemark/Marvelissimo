@@ -3,9 +3,7 @@ package com.projects.disav.marvelissimo.ui.searchresults.comics
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.comics.Comic
@@ -24,12 +22,15 @@ class FragmentComicList: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
 
+        setHasOptionsMenu(true)
+
 
         MarvelHandler.service.getAllComic()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { wrapper -> adapter.comics = wrapper.data.results
             adapter.notifyDataSetChanged()}
+        
 
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
