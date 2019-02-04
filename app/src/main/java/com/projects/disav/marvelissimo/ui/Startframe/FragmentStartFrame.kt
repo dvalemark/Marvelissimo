@@ -9,6 +9,9 @@ import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.ui.searchresults.characters.FragmentCharacterList
 import com.projects.disav.marvelissimo.ui.searchresults.comics.FragmentComicList
 import kotlinx.android.synthetic.main.start_view.view.*
+import android.support.v7.app.AppCompatActivity
+
+
 
 
 class FragmentStartFrame: Fragment() {
@@ -18,6 +21,7 @@ class FragmentStartFrame: Fragment() {
 
         val view = inflater.inflate(com.projects.disav.marvelissimo.R.layout.start_view, container, false)
 
+        (activity as AppCompatActivity).supportActionBar!!.hide()
 
         view.character_bg.setOnClickListener {
             val newfragment = FragmentCharacterList()

@@ -2,6 +2,7 @@ package com.projects.disav.marvelissimo.ui.searchresults.characters
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,8 @@ class FragmentCharacterList: Fragment() {
             .subscribe { wrapper -> adapter.characters = wrapper.data.results
                 adapter.notifyDataSetChanged()}
 
+
+        (activity as AppCompatActivity).supportActionBar!!.show()
 
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 

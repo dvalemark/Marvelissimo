@@ -2,6 +2,7 @@ package com.projects.disav.marvelissimo.ui.searchresults.comics
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.projects.disav.marvelissimo.R
@@ -30,7 +31,9 @@ class FragmentComicList: Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { wrapper -> adapter.comics = wrapper.data.results
             adapter.notifyDataSetChanged()}
-        
+
+
+        (activity as AppCompatActivity).supportActionBar!!.show()
 
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
