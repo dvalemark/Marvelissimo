@@ -7,7 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.projects.disav.marvelissimo.ui.searchresults.characters.FragmentCharacterList
-import com.projects.disav.marvelissimo.network.api.MarvelHandler
+import com.projects.disav.marvelissimo.network.api.dto.characters.Character
 import com.projects.disav.marvelissimo.ui.Startframe.FragmentStartFrame
 import com.projects.disav.marvelissimo.ui.searchresults.comics.FragmentComicList
 import io.reactivex.schedulers.Schedulers
@@ -34,21 +34,28 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.comic_menu -> {
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragment_content, FragmentComicList())
-                transaction.commit()
-                return true
+
+                return navigateToFragment(FragmentComicList())
             }
             R.id.character_menu ->{
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragment_content, FragmentCharacterList())
-                transaction.commit()
-                return true
+                return navigateToFragment(FragmentCharacterList())
             }
 
             else -> return super.onOptionsItemSelected(item)
         }
     }
+
+    fun navigateToFragment(frag : Fragment): Boolean{
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_content, frag)
+        transaction.addToBackStack(null)
+        transaction.commit()
+        return true
+
+    }
+
+
+
 }
 
 
