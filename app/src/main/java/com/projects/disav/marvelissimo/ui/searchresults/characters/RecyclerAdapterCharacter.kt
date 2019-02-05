@@ -51,8 +51,12 @@ class RecyclerAdapterCharacter( var characters: List<Character> =listOf()): Recy
 
         fun bindPhoto(character: Character) {
             this.character = character
-            Picasso.with(view.context).load(character.thumbnail.path+"."+character.thumbnail.extension)
-                .into(view.characterImage)
+            var uri = character.thumbnail.path
+            uri+="."
+            uri+=character.thumbnail.extension
+            Picasso.with(view.context).load(uri).placeholder(R.mipmap.ic_launcher_round)
+                .error(R.mipmap.ic_launcher)
+                .into(view.character_image_recyclerview)
             view.characterName.text = character.name
         }
     }
