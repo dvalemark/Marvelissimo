@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
     fun navigateToFragment(frag : Fragment): Boolean{
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_content, frag)
+        transaction.addToBackStack(null)
         transaction.commit()
         return true
 

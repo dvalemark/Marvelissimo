@@ -10,8 +10,7 @@ import com.projects.disav.marvelissimo.ui.searchresults.characters.FragmentChara
 import com.projects.disav.marvelissimo.ui.searchresults.comics.FragmentComicList
 import kotlinx.android.synthetic.main.start_view.view.*
 import android.support.v7.app.AppCompatActivity
-
-
+import com.projects.disav.marvelissimo.MainActivity
 
 
 class FragmentStartFrame: Fragment() {
@@ -24,20 +23,17 @@ class FragmentStartFrame: Fragment() {
         (activity as AppCompatActivity).supportActionBar!!.hide()
 
         view.character_bg.setOnClickListener {
-            val newfragment = FragmentCharacterList()
-            val fragmentTransaction = activity!!.supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_content, newfragment)
-            fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.commit()
+           var activity = activity as MainActivity
+
+            activity.navigateToFragment(FragmentCharacterList())
         }
 
         view.comic_bg.setOnClickListener{
-            val newfragment = FragmentComicList()
-            val fragmentTransaction = activity!!.supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_content, newfragment)
-            fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.commit()
+            var activity = activity as MainActivity
+
+            activity.navigateToFragment(FragmentComicList())
         }
+
 
         return view
     }
