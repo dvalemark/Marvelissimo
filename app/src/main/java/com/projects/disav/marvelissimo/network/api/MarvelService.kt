@@ -15,7 +15,7 @@ interface MarvelService {
     fun getCharactersByNameStartingWith(@Query("nameStartsWith") nameStart: String): Single<CharacterDataWrapper>
 
     @GET("characters/{id}")
-    fun getOneCharacter(@Path("id") searchVal :String): Single<CharacterDataWrapper>
+    fun getOneCharacter(@Path("id") searchVal :Int): Single<CharacterDataWrapper>
 
     @GET("comics")
     fun getAllComic(): Single<ComicsDataWrapper>

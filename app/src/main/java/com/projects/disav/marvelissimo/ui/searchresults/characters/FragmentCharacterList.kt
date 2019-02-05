@@ -10,9 +10,11 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.projects.disav.marvelissimo.MainActivity
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.characters.Character
+import com.projects.disav.marvelissimo.ui.FragmentViewOneCharacter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*
@@ -21,7 +23,7 @@ class FragmentCharacterList: Fragment(){
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerAdapterCharacter
-    private lateinit var adapterShowOne: AdapterShowOneCharacter
+
 
 
     override fun onCreateView(
@@ -78,11 +80,10 @@ class FragmentCharacterList: Fragment(){
         super.onPrepareOptionsMenu(menu)
     }
 
-    private fun itemClicked(character : Character): View? {
-        adapterShowOne = AdapterShowOneCharacter(character)
-        view?.my_recycler_view?.adapter = adapterShowOne
+    private fun itemClicked(character : Character) {
+        var activity = activity as MainActivity
+        activity.navigateToFragment(FragmentViewOneCharacter.newInstance(character.id))
 
-        return view
     }
 
 
