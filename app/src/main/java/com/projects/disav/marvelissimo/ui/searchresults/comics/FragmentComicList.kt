@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
 import android.view.*
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
@@ -44,6 +45,41 @@ class FragmentComicList: Fragment() {
         view.my_recycler_view.adapter = adapter
 
         return view
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val searchItem = menu.findItem(R.id.search)
+        if(searchItem != null){
+            val searchView = searchItem.actionView as SearchView
+
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if(query != null){
+                        MarvelHandler.service.getComicsByNameStartingWith(query.toLowerCase())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe {wrapper -> adapter.comics = wrapper.data.results
+                            adapter.notifyDataSetChanged()}
+                    }
+                    return true
+                }
+
+                override fun onQueryTextChange(newQuery: String?): Boolean {
+
+                    return true
+                }
+            })
+
+        }
+
+
+
+        super.onPrepareOptionsMenu(menu)
     }
 
 }

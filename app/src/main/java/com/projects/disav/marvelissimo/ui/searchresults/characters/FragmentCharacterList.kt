@@ -47,24 +47,30 @@ class FragmentCharacterList: Fragment(){
         return view
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onPrepareOptionsMenu(menu: Menu) {
         val searchItem = menu.findItem(R.id.search)
         if(searchItem != null){
             val searchView = searchItem.actionView as SearchView
+
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
-
-                return true
-                }
-
-                override fun onQueryTextChange(newQuery: String?): Boolean {
-                    if(newQuery != null){
-                        MarvelHandler.service.getCharactersByNameStartingWith(newQuery.toLowerCase())
+                    if(query != null){
+                        MarvelHandler.service.getCharactersByNameStartingWith(query.toLowerCase())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe { wrapper -> adapter.characters = wrapper.data.results
                                 adapter.notifyDataSetChanged()}
                     }
+                return true
+                }
+
+                override fun onQueryTextChange(newQuery: String?): Boolean {
+
                 return true
                 }
             })
