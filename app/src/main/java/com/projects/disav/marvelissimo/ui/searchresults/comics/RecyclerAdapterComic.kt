@@ -10,7 +10,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.card_for_list_comic.view.*
 import kotlinx.android.synthetic.main.card_for_list_character.view.*
 
-class RecyclerAdapterComic (var comics: List<Comic> = listOf()): RecyclerView.Adapter<RecyclerAdapterComic.ItemHolder>() {
+class RecyclerAdapterComic (var comics: List<Comic> = listOf(), val clickListener: (Comic) -> Unit): RecyclerView.Adapter<RecyclerAdapterComic.ItemHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapterComic.ItemHolder {
@@ -26,7 +26,7 @@ class RecyclerAdapterComic (var comics: List<Comic> = listOf()): RecyclerView.Ad
 
     override fun onBindViewHolder(holder: RecyclerAdapterComic.ItemHolder, position: Int) {
         val itemComic = comics[position]
-        holder.bindPhoto(itemComic)
+        holder.bindComic(itemComic, clickListener)
     }
 
 
@@ -51,10 +51,11 @@ class RecyclerAdapterComic (var comics: List<Comic> = listOf()): RecyclerView.Ad
             private val COMIC_KEY = "Comic"
         }
 
-        fun bindPhoto(comic: Comic) {
+        fun bindComic(comic: Comic, clickListener: (Comic) -> Unit) {
             this.comic = comic
             Picasso.with(view.context).load(comic.thumbnail.path+"."+comic.thumbnail.extension ).into(view.comicImage)
             view.comicTitle.text = comic.title
+            view.setOnClickListener { clickListener(comic)}
         }
     }
 }

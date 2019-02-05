@@ -19,33 +19,55 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*
 
-class FragmentCharacterList: Fragment(){
+class FragmentCharacterList : Fragment() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerAdapterCharacter
-
+    private var searchString = ""
 
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
 
-        MarvelHandler.service.getAllCharacters()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { wrapper -> adapter.characters = wrapper.data.results
-                adapter.notifyDataSetChanged()}
-
-
+        setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar!!.show()
+
+        if (savedInstanceState != null) {
+            var oldQuery = savedInstanceState.getString("search")
+            searchString = oldQuery
+        }
+
+
+        if (searchString.isEmpty()) {
+
+            MarvelHandler.service.getAllCharacters()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { wrapper ->
+                    adapter.characters = wrapper.data.results
+                    adapter.notifyDataSetChanged()
+                }
+
+        } else {
+            MarvelHandler.service.getCharactersByNameStartingWith(searchString.toLowerCase())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { wrapper ->
+                    adapter.characters = wrapper.data.results
+                    adapter.notifyDataSetChanged()
+                }
+        }
+
 
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
         linearLayoutManager = LinearLayoutManager(activity)
         view.my_recycler_view.layoutManager = linearLayoutManager
 
-        adapter = RecyclerAdapterCharacter(clickListener ={ character : Character -> itemClicked(character)})
+        adapter = RecyclerAdapterCharacter(clickListener = { character: Character -> itemClicked(character) })
         view.my_recycler_view.adapter = adapter
 
         return view
@@ -58,24 +80,29 @@ class FragmentCharacterList: Fragment(){
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         val searchItem = menu.findItem(R.id.search)
-        if(searchItem != null){
+        if (searchItem != null) {
             val searchView = searchItem.actionView as SearchView
 
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    if(query != null){
+                    if (query != null) {
+                        searchString = query
+
                         MarvelHandler.service.getCharactersByNameStartingWith(query.toLowerCase())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe { wrapper -> adapter.characters = wrapper.data.results
-                                adapter.notifyDataSetChanged()}
+                            .subscribe { wrapper ->
+                                adapter.characters = wrapper.data.results
+                                adapter.notifyDataSetChanged()
+                            }
                     }
-                return true
+                    searchView.clearFocus()
+                    return true
                 }
 
                 override fun onQueryTextChange(newQuery: String?): Boolean {
 
-                return true
+                    return true
                 }
             })
 
@@ -86,11 +113,14 @@ class FragmentCharacterList: Fragment(){
         super.onPrepareOptionsMenu(menu)
     }
 
-    private fun itemClicked(character : Character) {
+    private fun itemClicked(character: Character) {
         var activity = activity as MainActivity
         activity.navigateToFragment(FragmentViewOneCharacter.newInstance(character.id))
 
     }
 
-
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("search", searchString)
+    }
 }
