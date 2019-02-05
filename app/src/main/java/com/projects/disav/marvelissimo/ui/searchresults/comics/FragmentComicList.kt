@@ -1,11 +1,13 @@
 package com.projects.disav.marvelissimo.ui.searchresults.comics
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
+import android.widget.Toast
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.comics.Comic
@@ -13,6 +15,7 @@ import com.projects.disav.marvelissimo.network.api.dto.comics.ComicsDataWrapper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*
+
 
 class FragmentComicList: Fragment() {
 
@@ -60,11 +63,14 @@ class FragmentComicList: Fragment() {
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if(query != null){
-                        MarvelHandler.service.getComicsByNameStartingWith(query.toLowerCase())
+                        MarvelHandler.service.getComicsByTitleStartingWith(query.toLowerCase())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe {wrapper -> adapter.comics = wrapper.data.results
-                            adapter.notifyDataSetChanged()}
+                            .subscribe ({wrapper -> adapter.comics = wrapper.data.results
+                            adapter.notifyDataSetChanged()},{
+                                fun Context.toast(message: CharSequence) =
+                                    Toast.makeText(this, "Nu such comic, try again!", Toast.LENGTH_SHORT).show()
+                            })
                     }
                     return true
                 }
