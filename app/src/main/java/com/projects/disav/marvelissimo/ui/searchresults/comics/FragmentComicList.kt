@@ -23,7 +23,6 @@ class FragmentComicList : Fragment() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerAdapterComic
     private var searchString = ""
-    private var positionWhenClick = 0
     private var results = mutableListOf<Comic>()
 
     override fun onCreateView(
@@ -36,14 +35,6 @@ class FragmentComicList : Fragment() {
         (activity as AppCompatActivity).supportActionBar!!.show()
 
 
-
-
-        if (savedInstanceState != null) {
-            var oldQuery = savedInstanceState.getString("search")
-            searchString = oldQuery
-        }
-
-
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
         linearLayoutManager = LinearLayoutManager(activity)
@@ -51,10 +42,15 @@ class FragmentComicList : Fragment() {
 
         if(results.size == 0){
             getAllComics()
-            adapter = RecyclerAdapterComic(clickListener = { comic: Comic, int: Int -> itemClicked(comic, int) })
+            adapter = RecyclerAdapterComic(clickListener = { comic: Comic -> itemClicked(comic) })
+        }
+        else if (savedInstanceState != null) {
+            var oldQuery = savedInstanceState.getString("search")
+            getComicsByName(oldQuery)
+            adapter = RecyclerAdapterComic(clickListener = { comic: Comic -> itemClicked(comic) })
         }
         else{
-            adapter = RecyclerAdapterComic(results, clickListener = { comic: Comic, int: Int -> itemClicked(comic, int) })
+            adapter = RecyclerAdapterComic(results, clickListener = { comic: Comic-> itemClicked(comic) })
         }
 
         view.my_recycler_view.adapter = adapter
@@ -75,12 +71,6 @@ class FragmentComicList : Fragment() {
                 }
             }
         })
-
-
-
-
-
-
 
         return view
     }
@@ -119,8 +109,7 @@ class FragmentComicList : Fragment() {
         super.onPrepareOptionsMenu(menu)
     }
 
-    private fun itemClicked(comic: Comic, position: Int) {
-        positionWhenClick = position
+    private fun itemClicked(comic: Comic) {
         (activity as MainActivity).navigateToFragment(FragmentViewOneComic.newInstance(comic.id))
 
     }

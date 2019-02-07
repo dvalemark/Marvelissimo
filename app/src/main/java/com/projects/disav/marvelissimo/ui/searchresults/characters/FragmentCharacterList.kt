@@ -25,6 +25,7 @@ class FragmentCharacterList : Fragment() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerAdapterCharacter
     private var searchString: String = ""
+    private var results = mutableListOf<Character>()
 
 
     override fun onCreateView(
@@ -36,18 +37,6 @@ class FragmentCharacterList : Fragment() {
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar!!.show()
 
-        if (savedInstanceState != null) {
-            searchString = savedInstanceState!!.getString("search")
-
-        }
-
-
-        if (searchString.isEmpty()) {
-            getAllCharacters()
-
-        } else {
-            getCharactersNameStartBy(searchString)
-        }
 
 
         val view = inflater.inflate(R.layout.recyclerview, container, false)
@@ -55,7 +44,19 @@ class FragmentCharacterList : Fragment() {
         linearLayoutManager = LinearLayoutManager(activity)
         view.my_recycler_view.layoutManager = linearLayoutManager
 
-        adapter = RecyclerAdapterCharacter(clickListener = { character: Character -> itemClicked(character) })
+        if(results.size == 0){
+            getAllCharacters()
+            adapter = RecyclerAdapterCharacter(clickListener = { character: Character -> itemClicked(character) })
+        }
+        else if (savedInstanceState != null) {
+            searchString = savedInstanceState!!.getString("search")
+            getCharactersNameStartBy(searchString)
+            adapter = RecyclerAdapterCharacter(clickListener = { character: Character -> itemClicked(character) })
+        }
+        else{
+            adapter = RecyclerAdapterCharacter(results, clickListener = { character: Character -> itemClicked(character) })
+        }
+
         view.my_recycler_view.adapter = adapter
 
         view.my_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -90,8 +91,10 @@ class FragmentCharacterList : Fragment() {
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query != null) {
-                        adapter.characters.clear()
                         searchString = query
+                        adapter.characters.clear()
+                        results.clear()
+
                         getCharactersNameStartBy(query)
                     }
                     searchView.clearFocus()
@@ -110,8 +113,8 @@ class FragmentCharacterList : Fragment() {
     }
 
     private fun itemClicked(character: Character) {
-        var activity = activity as MainActivity
-        activity.navigateToFragment(FragmentViewOneCharacter.newInstance(character.id))
+
+        (activity as MainActivity).navigateToFragment(FragmentViewOneCharacter.newInstance(character.id))
 
     }
 
@@ -126,6 +129,7 @@ class FragmentCharacterList : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { wrapper ->
                 adapter.characters.addAll(wrapper.data.results)
+                results.addAll(wrapper.data.results)
                 adapter.notifyDataSetChanged()
             }
     }
@@ -136,6 +140,7 @@ class FragmentCharacterList : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { wrapper ->
                 adapter.characters.addAll(wrapper.data.results)
+                results.addAll(wrapper.data.results)
                 adapter.notifyDataSetChanged()
             }
     }
