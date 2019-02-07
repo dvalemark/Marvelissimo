@@ -26,6 +26,10 @@ class RecyclerAdapterCharacter( var characters: MutableList<Character> = mutable
     override fun onBindViewHolder(holder: RecyclerAdapterCharacter.ItemHolder, position: Int) {
         val itemCharacter = characters[position]
 
+        if(characters.isEmpty()){
+            holder.noResults()
+        }
+
         holder.bindCharacter(itemCharacter, clickListener)
     }
 
@@ -60,6 +64,13 @@ class RecyclerAdapterCharacter( var characters: MutableList<Character> = mutable
                 .into(view.character_image_recyclerview)
             view.characterName.text = character.name
             view.setOnClickListener { clickListener(character)}
+        }
+
+        fun noResults(){
+            Picasso.with(view.context).load(R.mipmap.ic_launcher_round)
+                .into(view.character_image_recyclerview)
+            view.characterName.text = "No results available, please try again!"
+
         }
     }
 }

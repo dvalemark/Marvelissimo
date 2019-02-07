@@ -40,7 +40,7 @@ class FragmentComicList : Fragment() {
         linearLayoutManager = LinearLayoutManager(activity)
         view.my_recycler_view.layoutManager = linearLayoutManager
 
-        if(results.size == 0){
+        if(results.size == 0 && searchString.isEmpty()){
             getAllComics()
             adapter = RecyclerAdapterComic(clickListener = { comic: Comic -> itemClicked(comic) })
         }
@@ -91,6 +91,8 @@ class FragmentComicList : Fragment() {
                         searchString = query
                         adapter.comics.clear()
                         results.clear()
+                        adapter.notifyDataSetChanged()
+
 
                         getComicsByName(query)
                     }
