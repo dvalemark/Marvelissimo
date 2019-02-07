@@ -9,19 +9,19 @@ import retrofit2.http.Query
 
 interface MarvelService {
     @GET("characters")
-    fun getAllCharacters(): Single<CharacterDataWrapper>
+    fun getAllCharacters(@Query("offset") offset : Int): Single<CharacterDataWrapper>
 
     @GET("characters")
-    fun getCharactersByNameStartingWith(@Query("nameStartsWith") nameStart: String): Single<CharacterDataWrapper>
+    fun getCharactersByNameStartingWith(@Query("nameStartsWith") nameStart: String, @Query("offset") offset : Int): Single<CharacterDataWrapper>
 
     @GET("characters/{id}")
     fun getOneCharacter(@Path("id") searchVal :Int): Single<CharacterDataWrapper>
 
     @GET("comics")
-    fun getAllComic(): Single<ComicsDataWrapper>
+    fun getAllComic(@Query("offset") offset : Int): Single<ComicsDataWrapper>
 
     @GET("comics")
-    fun getComicsByTitleStartingWith(@Query("titleStartsWith")nameStart: String): Single<ComicsDataWrapper>
+    fun getComicsByTitleStartingWith(@Query("titleStartsWith")nameStart: String, @Query("offset") offset : Int): Single<ComicsDataWrapper>
 
     @GET("comics/{id}")
     fun getOneComic(@Path("id")searchVal: Int):Single<ComicsDataWrapper>

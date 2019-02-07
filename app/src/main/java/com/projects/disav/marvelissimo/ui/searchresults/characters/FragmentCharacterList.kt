@@ -13,13 +13,11 @@ import com.projects.disav.marvelissimo.MainActivity
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.characters.Character
-import com.projects.disav.marvelissimo.ui.searchresults.displayoneresult.FragmentViewOneCharacter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*
 import android.support.v7.widget.RecyclerView
-
-
+import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.FragmentViewOneCharacter
 
 
 class FragmentCharacterList : Fragment() {
