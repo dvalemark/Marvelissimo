@@ -9,21 +9,24 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.projects.disav.marvelissimo.MainActivity
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.characters.Character
-import com.projects.disav.marvelissimo.ui.FragmentViewOneCharacter
+import com.projects.disav.marvelissimo.ui.searchresults.displayoneresult.FragmentViewOneCharacter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*
+import android.support.v7.widget.RecyclerView
+
+
+
 
 class FragmentCharacterList : Fragment() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerAdapterCharacter
-    private var searchString = ""
+    private var searchString: String = ""
 
 
     override fun onCreateView(
@@ -36,29 +39,16 @@ class FragmentCharacterList : Fragment() {
         (activity as AppCompatActivity).supportActionBar!!.show()
 
         if (savedInstanceState != null) {
-            var oldQuery = savedInstanceState.getString("search")
-            searchString = oldQuery
+            searchString = savedInstanceState!!.getString("search")
+
         }
 
 
         if (searchString.isEmpty()) {
-
-            MarvelHandler.service.getAllCharacters()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { wrapper ->
-                    adapter.characters = wrapper.data.results
-                    adapter.notifyDataSetChanged()
-                }
+            getAllCharacters()
 
         } else {
-            MarvelHandler.service.getCharactersByNameStartingWith(searchString.toLowerCase())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { wrapper ->
-                    adapter.characters = wrapper.data.results
-                    adapter.notifyDataSetChanged()
-                }
+            getCharactersNameStartBy(searchString)
         }
 
 
@@ -70,6 +60,22 @@ class FragmentCharacterList : Fragment() {
         adapter = RecyclerAdapterCharacter(clickListener = { character: Character -> itemClicked(character) })
         view.my_recycler_view.adapter = adapter
 
+        view.my_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+
+                if (!recyclerView.canScrollVertically(1)&& adapter.characters.size>=20) {
+                    if(searchString.isEmpty()){
+                        getAllCharacters(adapter.characters.size)
+                    }
+                    else{
+                        getCharactersNameStartBy(searchString)
+                    }
+
+                }
+            }
+        })
         return view
     }
 
@@ -86,15 +92,9 @@ class FragmentCharacterList : Fragment() {
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query != null) {
+                        adapter.characters.clear()
                         searchString = query
-
-                        MarvelHandler.service.getCharactersByNameStartingWith(query.toLowerCase())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe { wrapper ->
-                                adapter.characters = wrapper.data.results
-                                adapter.notifyDataSetChanged()
-                            }
+                        getCharactersNameStartBy(query)
                     }
                     searchView.clearFocus()
                     return true
@@ -108,8 +108,6 @@ class FragmentCharacterList : Fragment() {
 
         }
 
-
-
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -122,5 +120,25 @@ class FragmentCharacterList : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("search", searchString)
+    }
+
+    fun getCharactersNameStartBy( query: String, offset:Int=0){
+        MarvelHandler.service.getCharactersByNameStartingWith(query.toLowerCase(), offset)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { wrapper ->
+                adapter.characters.addAll(wrapper.data.results)
+                adapter.notifyDataSetChanged()
+            }
+    }
+
+    fun getAllCharacters(offset: Int=0){
+        MarvelHandler.service.getAllCharacters(offset)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { wrapper ->
+                adapter.characters.addAll(wrapper.data.results)
+                adapter.notifyDataSetChanged()
+            }
     }
 }
