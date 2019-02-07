@@ -1,5 +1,6 @@
-package com.projects.disav.marvelissimo.ui
+package com.projects.disav.marvelissimo.ui.searchresults.viewoneresult
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,24 +10,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
-import com.projects.disav.marvelissimo.network.api.dto.characters.Character
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.one_character_view.view.*
+import kotlinx.android.synthetic.main.one_comic_view.view.*
 
-class FragmentViewOneCharacter(): Fragment(){
+class FragmentViewOneComic(): Fragment(){
 
     companion object {
-        fun newInstance(id : Int): Fragment{
-       val fragment = FragmentViewOneCharacter()
-        val bundle = Bundle()
-        bundle.putInt("index", id)
-        fragment.arguments=bundle
-        return fragment
-    }
+        fun newInstance(id : Int): Fragment {
+            val fragment = FragmentViewOneComic()
+            val bundle = Bundle()
+            bundle.putInt("index", id)
+            fragment.arguments=bundle
+            return fragment
+        }
 
     }
 
@@ -36,20 +37,21 @@ class FragmentViewOneCharacter(): Fragment(){
 
         (activity as AppCompatActivity).supportActionBar!!.hide()
 
+        val view = inflater.inflate(R.layout.one_comic_view, container, false)
 
-        val view = inflater.inflate(R.layout.one_character_view, container, false)
-
-        MarvelHandler.service.getOneCharacter(id)
+        MarvelHandler.service.getOneComic(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { wrapper -> val character = wrapper.data.results.get(0)
-                 view.character_title.text = character.name
-                view.character_summary.text = character.description
-                Picasso.with(view.context).load(character.thumbnail.path+"."+character.thumbnail.extension)
+            .subscribe( { wrapper -> val comic = wrapper.data.results.get(0)
+                view.comic_title.text = comic.title
+                view.comic_summary.text = comic.description
+                Picasso.with(view.context).load(comic.thumbnail.path+"."+comic.thumbnail.extension)
                     .placeholder(R.mipmap.ic_launcher_round)
-                    .into(view.character_image)
-                url = character.urls.get(1).url
-            }
+                    .into(view.comic_image)
+                url = comic.urls.get(0).url
+            }, {fun Context.toast(message: CharSequence) =
+                Toast.makeText(this, "Nu such comic, try again!", Toast.LENGTH_SHORT).show()
+            })
 
         val websiteButton = view.go_to_website as Button
 
@@ -68,4 +70,3 @@ class FragmentViewOneCharacter(): Fragment(){
 
 
 }
-

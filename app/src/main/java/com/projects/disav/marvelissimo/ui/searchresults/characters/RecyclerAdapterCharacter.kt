@@ -11,7 +11,7 @@ import com.projects.disav.marvelissimo.network.api.dto.characters.Character
 import kotlinx.android.synthetic.main.card_for_list_character.view.*
 import kotlinx.android.synthetic.main.card_for_list_comic.view.*
 
-class RecyclerAdapterCharacter( var characters: List<Character> =listOf(), val clickListener: (Character) -> Unit): RecyclerView.Adapter<RecyclerAdapterCharacter.ItemHolder>() {
+class RecyclerAdapterCharacter( var characters: MutableList<Character> = mutableListOf(), val clickListener: (Character) -> Unit): RecyclerView.Adapter<RecyclerAdapterCharacter.ItemHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapterCharacter.ItemHolder {
 
