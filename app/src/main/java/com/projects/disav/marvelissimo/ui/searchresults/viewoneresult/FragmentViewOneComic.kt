@@ -50,7 +50,17 @@ class FragmentViewOneComic: Fragment(){
                 view.comic_summary.text = comic.description
                 Picasso.with(view.context).load(comic.thumbnail.path+"."+comic.thumbnail.extension)
                     .placeholder(R.mipmap.ic_launcher_round)
-                    .into(view.comic_image)
+                    .into(view.comic_image, object : com.squareup.picasso.Callback{
+                        override fun onSuccess() {
+                            if(view.progress_view_one_comic_image!= null){
+                                view.progress_view_one_comic_image.setVisibility(View.GONE)
+                            }
+                        }
+
+                        override fun onError() {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+                    })
                 url = comic.urls.get(0).url
                 createExpandableLv(getData(comic),expandableListView, view)
             }
