@@ -81,63 +81,64 @@ class FragmentViewOneCharacter(): Fragment(){
     }
 
 
-}
-
-private fun getData(character: Character): HashMap<String, MutableList<String>>{
-    var comicList: MutableList<String> = mutableListOf()
-    var seriesList: MutableList<String> = mutableListOf()
-    for (item in character.comics.items) {
-        comicList.add(item.name)
-    }
-    for (item in character.series.items){
-        seriesList.add(item.name)
-    }
-
-    var mapOfCharacterExpLv = HashMap<String, MutableList<String>>()
-    mapOfCharacterExpLv["Comics"]=comicList
-    mapOfCharacterExpLv["Series"]=seriesList
-
-
-
-    return mapOfCharacterExpLv
-}
-
-
-
-private fun createExpandableLv(listData : HashMap<String, MutableList<String>>, expandableListView : ExpandableListView, view : View) {
-    if (expandableListView != null) {
-
-        val titleList = ArrayList(listData.keys)
-        var adapter = AdapterExpandableListView(view.context, titleList as ArrayList<String>, listData)
-
-        expandableListView!!.setAdapter(adapter)
-
-        expandableListView!!.setOnGroupExpandListener { groupPosition ->
-            Toast.makeText(
-                view.context,
-                (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
-                Toast.LENGTH_SHORT
-            ).show()
+    private fun getData(character: Character): HashMap<String, MutableList<String>>{
+        var comicList: MutableList<String> = mutableListOf()
+        var seriesList: MutableList<String> = mutableListOf()
+        for (item in character.comics.items) {
+            comicList.add(item.name)
+        }
+        for (item in character.series.items){
+            seriesList.add(item.name)
         }
 
-        expandableListView!!.setOnGroupCollapseListener { groupPosition ->
-            Toast.makeText(
-                 view.context,
-                (titleList as ArrayList<String>)[groupPosition] + " List Collapsed.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        var mapOfCharacterExpLv = HashMap<String, MutableList<String>>()
+        mapOfCharacterExpLv["Comics"]=comicList
+        mapOfCharacterExpLv["Series"]=seriesList
 
-        expandableListView!!.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
-            Toast.makeText(
-                view.context,
-                "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(titleList as ArrayList<String>)[groupPosition]]!!.get(
-                    childPosition
-                ),
-                Toast.LENGTH_SHORT
-            ).show()
-            false
+
+
+        return mapOfCharacterExpLv
+    }
+
+
+
+    private fun createExpandableLv(listData : HashMap<String, MutableList<String>>, expandableListView : ExpandableListView, view : View) {
+        if (expandableListView != null) {
+
+            val titleList = ArrayList(listData.keys)
+            var adapter = AdapterExpandableListView(view.context, titleList as ArrayList<String>, listData)
+
+            expandableListView!!.setAdapter(adapter)
+
+            expandableListView!!.setOnGroupExpandListener { groupPosition ->
+                Toast.makeText(
+                    view.context,
+                    (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            expandableListView!!.setOnGroupCollapseListener { groupPosition ->
+                Toast.makeText(
+                    view.context,
+                    (titleList as ArrayList<String>)[groupPosition] + " List Collapsed.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            expandableListView!!.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+                Toast.makeText(
+                    view.context,
+                    "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(titleList as ArrayList<String>)[groupPosition]]!!.get(
+                        childPosition
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+            }
         }
     }
+
 }
+
 

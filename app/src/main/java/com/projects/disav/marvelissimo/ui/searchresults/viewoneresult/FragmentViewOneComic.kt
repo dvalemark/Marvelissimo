@@ -1,6 +1,5 @@
 package com.projects.disav.marvelissimo.ui.searchresults.viewoneresult
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,15 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ExpandableListView
 import android.widget.Toast
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
+import com.projects.disav.marvelissimo.network.api.dto.comics.Comic
+import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.character.AdapterExpandableListView
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.one_comic_view.view.*
 
-class FragmentViewOneComic(): Fragment(){
+class FragmentViewOneComic: Fragment(){
 
     companion object {
         fun newInstance(id : Int): Fragment {
@@ -38,20 +40,20 @@ class FragmentViewOneComic(): Fragment(){
         (activity as AppCompatActivity).supportActionBar!!.hide()
 
         val view = inflater.inflate(R.layout.one_comic_view, container, false)
+        val expandableListView = view.expandableListView
 
         MarvelHandler.service.getOneComic(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe( { wrapper -> val comic = wrapper.data.results.get(0)
+            .subscribe { wrapper -> val comic = wrapper.data.results.get(0)
                 view.comic_title.text = comic.title
                 view.comic_summary.text = comic.description
                 Picasso.with(view.context).load(comic.thumbnail.path+"."+comic.thumbnail.extension)
                     .placeholder(R.mipmap.ic_launcher_round)
                     .into(view.comic_image)
                 url = comic.urls.get(0).url
-            }, {fun Context.toast(message: CharSequence) =
-                Toast.makeText(this, "Nu such comic, try again!", Toast.LENGTH_SHORT).show()
-            })
+                createExpandableLv(getData(comic),expandableListView, view)
+            }
 
         val websiteButton = view.go_to_website as Button
 
@@ -68,5 +70,63 @@ class FragmentViewOneComic(): Fragment(){
     }
 
 
+    private fun getData(comic: Comic): HashMap<String, MutableList<String>>{
+        var characterList: MutableList<String> = mutableListOf()
+        var authorList: MutableList<String> = mutableListOf()
+        for (item in comic.characters.items) {
+            characterList.add(item.name)
+        }
+        for (item in comic.creators.items){
+            authorList.add(item.name)
+        }
+
+        var mapOfCharacterExpLv = HashMap<String, MutableList<String>>()
+        mapOfCharacterExpLv["Creators"]=authorList
+        mapOfCharacterExpLv["Characters"]=characterList
+
+
+
+        return mapOfCharacterExpLv
+    }
+
+
+
+    private fun createExpandableLv(listData : HashMap<String, MutableList<String>>, expandableListView : ExpandableListView, view : View) {
+        if (expandableListView != null) {
+
+            val titleList = ArrayList(listData.keys)
+            var adapter = AdapterExpandableListView(view.context, titleList as ArrayList<String>, listData)
+
+            expandableListView!!.setAdapter(adapter)
+
+            expandableListView!!.setOnGroupExpandListener { groupPosition ->
+                Toast.makeText(
+                    view.context,
+                    (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            expandableListView!!.setOnGroupCollapseListener { groupPosition ->
+                Toast.makeText(
+                    view.context,
+                    (titleList as ArrayList<String>)[groupPosition] + " List Collapsed.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            expandableListView!!.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+                Toast.makeText(
+                    view.context,
+                    "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(titleList as ArrayList<String>)[groupPosition]]!!.get(
+                        childPosition
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+            }
+        }
+    }
 
 }
+
