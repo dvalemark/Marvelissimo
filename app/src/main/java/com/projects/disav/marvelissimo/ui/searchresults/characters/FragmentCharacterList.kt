@@ -17,6 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.ViewUtils
 import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.character.FragmentViewOneCharacter
 
 
@@ -103,7 +104,7 @@ class FragmentCharacterList : Fragment() {
                         results.clear()
                         adapter.notifyDataSetChanged()
 
-                        getCharactersNameStartBy(query, view = view)
+                        getCharactersNameStartBy(query, view =view)
                     }
                     searchView.clearFocus()
                     return true
@@ -132,7 +133,7 @@ class FragmentCharacterList : Fragment() {
         outState.putString("search", searchString)
     }
 
-    fun getCharactersNameStartBy( query: String, offset:Int=0, view: View){
+    fun getCharactersNameStartBy( query: String, offset:Int=0, view: View?){
         MarvelHandler.service.getCharactersByNameStartingWith(query.toLowerCase(), offset)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -142,7 +143,11 @@ class FragmentCharacterList : Fragment() {
                 adapter.notifyDataSetChanged()
             }
         if(results.isEmpty()){
-            view.empty_view.isShown
+            view?.empty_view?.visibility = View.VISIBLE
+        }
+        else
+        {
+            view?.empty_view?.visibility=View.INVISIBLE
         }
 
 
