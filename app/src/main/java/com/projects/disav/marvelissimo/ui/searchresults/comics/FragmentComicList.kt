@@ -92,7 +92,7 @@ class FragmentComicList : Fragment() {
                         adapter.comics.clear()
                         results.clear()
                         adapter.notifyDataSetChanged()
-
+                        visibility(true)
 
                         getComicsByName(query)
                     }
@@ -129,6 +129,11 @@ class FragmentComicList : Fragment() {
                 adapter.comics.addAll( wrapper.data.results)
                 results.addAll( wrapper.data.results)
                 adapter.notifyDataSetChanged()
+
+                if(results.isEmpty()){
+                   visibility(false)
+
+                }
             }
     }
 
@@ -141,5 +146,9 @@ class FragmentComicList : Fragment() {
                 results.addAll(wrapper.data.results)
                 adapter.notifyDataSetChanged()
             }
+    }
+
+    fun visibility( bool: Boolean){
+        if(bool) view?.my_recycler_view?.visibility = View.VISIBLE else view?.my_recycler_view?.visibility = View.GONE
     }
 }

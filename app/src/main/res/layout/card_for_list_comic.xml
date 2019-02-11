@@ -7,15 +7,18 @@
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        card_view:cardCornerRadius="4dp">
+        card_view:cardCornerRadius="8dp"
+        android:layout_marginBottom="3dp">
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_height="120dp"
+            android:background="#7D95AD"
+            android:focusableInTouchMode="true">
         <ImageView
                 android:id="@+id/comicImage"
                 android:contentDescription="Image here"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="60dp"
+                android:layout_height="88dp"
                 android:layout_weight="3"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
@@ -24,8 +27,7 @@
                 card_view:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="192dp"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="8dp" card_view:layout_constraintStart_toStartOf="parent"
-                android:src="@mipmap/ic_launcher"
-                card_view:layout_constraintHorizontal_bias="0.072"/>
+                card_view:layout_constraintHorizontal_bias="0.072" card_view:layout_constraintVertical_bias="0.0"/>
         <ProgressBar
                 android:id="@+id/progress_comic_image"
                 android:layout_width="100dp"
@@ -40,7 +42,7 @@
                 android:layout_width="234dp"
                 android:layout_height="86dp"
                 android:id="@+id/comicTitle"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:layout_marginTop="8dp" card_view:layout_constraintTop_toTopOf="parent"
                 card_view:layout_constraintStart_toEndOf="@id/comicImage"
                 android:layout_marginStart="8dp"

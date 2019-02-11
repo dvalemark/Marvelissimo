@@ -52,6 +52,8 @@ class FragmentCharacterList : Fragment() {
         linearLayoutManager = LinearLayoutManager(activity)
         view.my_recycler_view.layoutManager = linearLayoutManager
 
+
+
         if(results.size == 0){
             getAllCharacters()
             adapter = RecyclerAdapterCharacter(clickListener = { character: Character -> itemClicked(character) })
@@ -103,6 +105,7 @@ class FragmentCharacterList : Fragment() {
                         adapter.characters.clear()
                         results.clear()
                         adapter.notifyDataSetChanged()
+                        visibility(true)
 
                         getCharactersNameStartBy(query, view =view)
                     }
@@ -141,14 +144,13 @@ class FragmentCharacterList : Fragment() {
                 adapter.characters.addAll(wrapper.data.results)
                 results.addAll(wrapper.data.results)
                 adapter.notifyDataSetChanged()
+
+                if(results.isEmpty()){
+                    visibility(false)
+
+                }
+
             }
-        if(results.isEmpty()){
-            view?.empty_view?.visibility = View.VISIBLE
-        }
-        else
-        {
-            view?.empty_view?.visibility=View.INVISIBLE
-        }
 
 
     }
@@ -162,6 +164,10 @@ class FragmentCharacterList : Fragment() {
                 results.addAll(wrapper.data.results)
                 adapter.notifyDataSetChanged()
             }
+    }
+
+    fun visibility( bool: Boolean){
+        if(bool) view?.my_recycler_view?.visibility = View.VISIBLE else view?.my_recycler_view?.visibility = View.GONE
     }
 
 
