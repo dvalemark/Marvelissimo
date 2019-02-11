@@ -131,8 +131,8 @@ class FragmentComicList : Fragment() {
                 adapter.notifyDataSetChanged()
 
                 if(results.isEmpty()){
+                    view?.empty_view?.text="No available results for ${searchString}, try again!"
                    visibility(false)
-
                 }
             }
     }
