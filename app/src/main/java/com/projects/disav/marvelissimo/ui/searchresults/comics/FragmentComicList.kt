@@ -40,7 +40,7 @@ class FragmentComicList : Fragment() {
         linearLayoutManager = LinearLayoutManager(activity)
         view.my_recycler_view.layoutManager = linearLayoutManager
 
-        if(results.size == 0){
+        if(results.size == 0 && searchString.isEmpty()){
             getAllComics()
             adapter = RecyclerAdapterComic(clickListener = { comic: Comic -> itemClicked(comic) })
         }
@@ -91,6 +91,8 @@ class FragmentComicList : Fragment() {
                         searchString = query
                         adapter.comics.clear()
                         results.clear()
+                        adapter.notifyDataSetChanged()
+                        visibility(true)
 
                         getComicsByName(query)
                     }
@@ -127,6 +129,11 @@ class FragmentComicList : Fragment() {
                 adapter.comics.addAll( wrapper.data.results)
                 results.addAll( wrapper.data.results)
                 adapter.notifyDataSetChanged()
+
+                if(results.isEmpty()){
+                    view?.empty_view?.text="No available results for ${searchString}, try again!"
+                   visibility(false)
+                }
             }
     }
 
@@ -139,5 +146,9 @@ class FragmentComicList : Fragment() {
                 results.addAll(wrapper.data.results)
                 adapter.notifyDataSetChanged()
             }
+    }
+
+    fun visibility( bool: Boolean){
+        if(bool) view?.my_recycler_view?.visibility = View.VISIBLE else view?.my_recycler_view?.visibility = View.GONE
     }
 }

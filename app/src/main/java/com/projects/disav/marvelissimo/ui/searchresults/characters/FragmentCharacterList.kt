@@ -17,7 +17,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*
 import android.support.v7.widget.RecyclerView
-import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.FragmentViewOneCharacter
+import android.support.v7.widget.ViewUtils
+import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.character.FragmentViewOneCharacter
+
+
+
 
 
 class FragmentCharacterList : Fragment() {
@@ -28,21 +32,27 @@ class FragmentCharacterList : Fragment() {
     private var results = mutableListOf<Character>()
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        setHasOptionsMenu(true)
+        view?.my_recycler_view?.clearFocus()
+
+            setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar!!.show()
 
 
 
         val view = inflater.inflate(R.layout.recyclerview, container, false)
 
+
         linearLayoutManager = LinearLayoutManager(activity)
         view.my_recycler_view.layoutManager = linearLayoutManager
+
+
 
         if(results.size == 0){
             getAllCharacters()
@@ -50,7 +60,7 @@ class FragmentCharacterList : Fragment() {
         }
         else if (savedInstanceState != null) {
             searchString = savedInstanceState!!.getString("search")
-            getCharactersNameStartBy(searchString)
+            getCharactersNameStartBy(searchString, view=view)
             adapter = RecyclerAdapterCharacter(clickListener = { character: Character -> itemClicked(character) })
         }
         else{
@@ -69,7 +79,7 @@ class FragmentCharacterList : Fragment() {
                         getAllCharacters(adapter.characters.size)
                     }
                     else{
-                        getCharactersNameStartBy(searchString)
+                        getCharactersNameStartBy(searchString, adapter.characters.size, view)
                     }
 
                 }
@@ -94,8 +104,10 @@ class FragmentCharacterList : Fragment() {
                         searchString = query
                         adapter.characters.clear()
                         results.clear()
+                        adapter.notifyDataSetChanged()
+                        visibility(true)
 
-                        getCharactersNameStartBy(query)
+                        getCharactersNameStartBy(query, view =view)
                     }
                     searchView.clearFocus()
                     return true
@@ -108,6 +120,7 @@ class FragmentCharacterList : Fragment() {
             })
 
         }
+
 
         super.onPrepareOptionsMenu(menu)
     }
@@ -123,7 +136,7 @@ class FragmentCharacterList : Fragment() {
         outState.putString("search", searchString)
     }
 
-    fun getCharactersNameStartBy( query: String, offset:Int=0){
+    fun getCharactersNameStartBy( query: String, offset:Int=0, view: View?){
         MarvelHandler.service.getCharactersByNameStartingWith(query.toLowerCase(), offset)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -131,7 +144,16 @@ class FragmentCharacterList : Fragment() {
                 adapter.characters.addAll(wrapper.data.results)
                 results.addAll(wrapper.data.results)
                 adapter.notifyDataSetChanged()
+
+                if(results.isEmpty()){
+                    view?.empty_view?.text="No available results for ${searchString}, try again!"
+                    visibility(false)
+
+                }
+
             }
+
+
     }
 
     fun getAllCharacters(offset: Int=0){
@@ -144,4 +166,10 @@ class FragmentCharacterList : Fragment() {
                 adapter.notifyDataSetChanged()
             }
     }
+
+    fun visibility( bool: Boolean){
+        if(bool) view?.my_recycler_view?.visibility = View.VISIBLE else view?.my_recycler_view?.visibility = View.GONE
+    }
+
+
 }

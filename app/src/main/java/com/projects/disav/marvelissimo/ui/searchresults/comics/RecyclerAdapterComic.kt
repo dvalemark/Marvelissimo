@@ -53,7 +53,17 @@ class RecyclerAdapterComic (var comics: MutableList<Comic> = mutableListOf(), va
 
         fun bindComic(comic: Comic, clickListener: (Comic) -> Unit) {
             this.comic = comic
-            Picasso.with(view.context).load(comic.thumbnail.path+"."+comic.thumbnail.extension ).into(view.comicImage)
+            Picasso.with(view.context).load(comic.thumbnail.path+"."+comic.thumbnail.extension ).into(view.comicImage, object : com.squareup.picasso.Callback {
+                override fun onSuccess() {
+                    if (view.progress_comic_image != null) {
+                        view.progress_comic_image.setVisibility(View.GONE)
+                    }
+                }
+
+                override fun onError() {
+
+                }
+            })
             view.comicTitle.text = comic.title
             view.setOnClickListener { clickListener(comic)}
         }

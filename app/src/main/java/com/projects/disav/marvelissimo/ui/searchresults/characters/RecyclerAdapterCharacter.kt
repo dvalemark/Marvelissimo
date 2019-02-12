@@ -8,8 +8,12 @@ import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.inflate
 import com.squareup.picasso.Picasso
 import com.projects.disav.marvelissimo.network.api.dto.characters.Character
+import com.squareup.picasso.Callback
 import kotlinx.android.synthetic.main.card_for_list_character.view.*
 import kotlinx.android.synthetic.main.card_for_list_comic.view.*
+
+
+
 
 class RecyclerAdapterCharacter( var characters: MutableList<Character> = mutableListOf(), val clickListener: (Character) -> Unit): RecyclerView.Adapter<RecyclerAdapterCharacter.ItemHolder>() {
 
@@ -25,6 +29,8 @@ class RecyclerAdapterCharacter( var characters: MutableList<Character> = mutable
 
     override fun onBindViewHolder(holder: RecyclerAdapterCharacter.ItemHolder, position: Int) {
         val itemCharacter = characters[position]
+
+
 
         holder.bindCharacter(itemCharacter, clickListener)
     }
@@ -55,11 +61,24 @@ class RecyclerAdapterCharacter( var characters: MutableList<Character> = mutable
             var uri = character.thumbnail.path
             uri+="."
             uri+=character.thumbnail.extension
-            Picasso.with(view.context).load(uri).placeholder(R.mipmap.ic_launcher_round)
+            Picasso.with(view.context).load(uri)
                 .error(R.mipmap.ic_launcher)
-                .into(view.character_image_recyclerview)
+                .into(view.character_image_recyclerview, object : com.squareup.picasso.Callback {
+                    override fun onSuccess() {
+                        if (view.progress_character_image != null) {
+                            view.progress_character_image.setVisibility(View.GONE)
+                        }
+                    }
+
+                    override fun onError() {
+
+                    }
+                })
             view.characterName.text = character.name
             view.setOnClickListener { clickListener(character)}
+
+
         }
+
     }
 }
