@@ -1,27 +1,20 @@
 package com.projects.disav.marvelissimo
 
-import android.support.test.InstrumentationRegistry
+
 import android.support.test.espresso.Espresso
-import android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.action.ViewActions.*
-import android.support.test.espresso.assertion.ViewAssertions
-import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.contrib.RecyclerViewActions
-import android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import com.projects.disav.marvelissimo.ui.searchresults.characters.RecyclerAdapterCharacter
 import com.projects.disav.marvelissimo.ui.searchresults.comics.RecyclerAdapterComic
-import org.hamcrest.CoreMatchers.anything
-import org.hamcrest.Matchers.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.math.E
 
 @RunWith(AndroidJUnit4::class)
 class EspressoMainTests{
