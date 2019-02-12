@@ -9,4 +9,6 @@
     <color name="blueGrey">#4E5860</color>
     <color name="cardViewGrey">#9dacb7</color>
     <color name="oneViewTextColor">#1a1f23</color>
+    <color name="lightText">#ffffff</color>
+
 </resources>
