@@ -17,11 +17,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.ViewUtils
+import com.projects.disav.marvelissimo.network.api.dto.characters.CharacterDataContainer
+import com.projects.disav.marvelissimo.network.api.dto.characters.CharacterDataWrapper
 import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.character.FragmentViewOneCharacter
-
-
-
 
 
 class FragmentCharacterList : Fragment() {
@@ -32,7 +30,6 @@ class FragmentCharacterList : Fragment() {
     private var results = mutableListOf<Character>()
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,9 +38,8 @@ class FragmentCharacterList : Fragment() {
 
         view?.my_recycler_view?.clearFocus()
 
-            setHasOptionsMenu(true)
+        setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar!!.show()
-
 
 
         val view = inflater.inflate(R.layout.recyclerview, container, false)
@@ -54,17 +50,16 @@ class FragmentCharacterList : Fragment() {
 
 
 
-        if(results.size == 0){
+        if (results.size == 0) {
             getAllCharacters()
             adapter = RecyclerAdapterCharacter(clickListener = { character: Character -> itemClicked(character) })
-        }
-        else if (savedInstanceState != null) {
+        } else if (savedInstanceState != null) {
             searchString = savedInstanceState!!.getString("search")
-            getCharactersNameStartBy(searchString, view=view)
+            getCharactersNameStartBy(searchString, view = view)
             adapter = RecyclerAdapterCharacter(clickListener = { character: Character -> itemClicked(character) })
-        }
-        else{
-            adapter = RecyclerAdapterCharacter(results, clickListener = { character: Character -> itemClicked(character) })
+        } else {
+            adapter =
+                RecyclerAdapterCharacter(results, clickListener = { character: Character -> itemClicked(character) })
         }
 
         view.my_recycler_view.adapter = adapter
@@ -74,11 +69,10 @@ class FragmentCharacterList : Fragment() {
                 super.onScrollStateChanged(recyclerView, newState)
 
 
-                if (!recyclerView.canScrollVertically(1)&& adapter.characters.size>=20) {
-                    if(searchString.isEmpty()){
+                if (!recyclerView.canScrollVertically(1) && adapter.characters.size >= 20) {
+                    if (searchString.isEmpty()) {
                         getAllCharacters(adapter.characters.size)
-                    }
-                    else{
+                    } else {
                         getCharactersNameStartBy(searchString, adapter.characters.size, view)
                     }
 
@@ -107,7 +101,7 @@ class FragmentCharacterList : Fragment() {
                         adapter.notifyDataSetChanged()
                         recyclerVisibility(true)
 
-                        getCharactersNameStartBy(query, view =view)
+                        getCharactersNameStartBy(query, view = view)
                     }
                     searchView.clearFocus()
                     return true
@@ -136,39 +130,49 @@ class FragmentCharacterList : Fragment() {
         outState.putString("search", searchString)
     }
 
-    fun getCharactersNameStartBy( query: String, offset:Int=0, view: View?){
+    fun getCharactersNameStartBy(query: String, offset: Int = 0, view: View?) {
         MarvelHandler.service.getCharactersByNameStartingWith(query.toLowerCase(), offset)
             .subscribeOn(Schedulers.io())
+            .retry(10)
+            .onErrorReturn {
+                println("error : ${it.message}")
+                CharacterDataWrapper(CharacterDataContainer(emptyList()))
+            }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { wrapper ->
+            .subscribe({ wrapper ->
                 adapter.characters.addAll(wrapper.data.results)
                 results.addAll(wrapper.data.results)
                 adapter.notifyDataSetChanged()
 
-                if(results.isEmpty()){
-                    view?.empty_view?.text="No available results for ${searchString}, try again!"
+                if (results.isEmpty()) {
+                    view?.empty_view?.text = "No available results for ${searchString}, try again!"
                     recyclerVisibility(false)
-
                 }
 
-            }
+            }, { err -> System.out.println("Error: ${this}") })
 
 
     }
 
-    fun getAllCharacters(offset: Int=0){
+    fun getAllCharacters(offset: Int = 0) {
         MarvelHandler.service.getAllCharacters(offset)
             .subscribeOn(Schedulers.io())
+            .retry(10)
+            .onErrorReturn {
+                println("error : ${it.message}")
+                CharacterDataWrapper(CharacterDataContainer(emptyList()))
+            }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { wrapper ->
+            .subscribe({ wrapper ->
                 adapter.characters.addAll(wrapper.data.results)
                 results.addAll(wrapper.data.results)
                 adapter.notifyDataSetChanged()
-            }
+            }, {
+            })
     }
 
-    fun recyclerVisibility( bool: Boolean){
-        if(bool) view?.my_recycler_view?.visibility = View.VISIBLE else view?.my_recycler_view?.visibility = View.GONE
+    fun recyclerVisibility(bool: Boolean) {
+        if (bool) view?.my_recycler_view?.visibility = View.VISIBLE else view?.my_recycler_view?.visibility = View.GONE
     }
 
 

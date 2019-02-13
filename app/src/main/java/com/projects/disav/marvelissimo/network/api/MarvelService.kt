@@ -1,8 +1,11 @@
 package com.projects.disav.marvelissimo.network.api
 
+import com.projects.disav.marvelissimo.network.api.dto.characters.Character
+import com.projects.disav.marvelissimo.network.api.dto.characters.CharacterDataContainer
 import com.projects.disav.marvelissimo.network.api.dto.characters.CharacterDataWrapper
 import com.projects.disav.marvelissimo.network.api.dto.comics.ComicsDataWrapper
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

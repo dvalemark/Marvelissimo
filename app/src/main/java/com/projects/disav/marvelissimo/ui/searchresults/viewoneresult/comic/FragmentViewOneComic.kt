@@ -14,6 +14,8 @@ import android.widget.Toast
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.comics.Comic
+import com.projects.disav.marvelissimo.network.api.dto.comics.ComicsDataContainer
+import com.projects.disav.marvelissimo.network.api.dto.comics.ComicsDataWrapper
 import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.AdapterExpandableListView
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,6 +46,11 @@ class FragmentViewOneComic: Fragment(){
 
         MarvelHandler.service.getOneComic(id)
             .subscribeOn(Schedulers.io())
+            .retry(10)
+            .onErrorReturn {
+                println("error : ${it.message}")
+                ComicsDataWrapper(ComicsDataContainer(emptyList()))
+            }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { wrapper -> val comic = wrapper.data.results.get(0)
                 view.comic_title.text = comic.title
@@ -115,11 +122,7 @@ class FragmentViewOneComic: Fragment(){
             expandableListView!!.setAdapter(adapter)
 
             expandableListView!!.setOnGroupExpandListener { groupPosition ->
-                Toast.makeText(
-                    view.context,
-                    (titleList as ArrayList<String>)[groupPosition] + " List Expanded.",
-                    Toast.LENGTH_SHORT
-                ).show()
+
             }
 
             expandableListView!!.setOnGroupCollapseListener { groupPosition ->

@@ -11,6 +11,8 @@ import com.projects.disav.marvelissimo.MainActivity
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.comics.Comic
+import com.projects.disav.marvelissimo.network.api.dto.comics.ComicsDataContainer
+import com.projects.disav.marvelissimo.network.api.dto.comics.ComicsDataWrapper
 import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.comic.FragmentViewOneComic
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -123,6 +125,11 @@ class FragmentComicList : Fragment() {
     fun getComicsByName(query: String, offset: Int=0){
         MarvelHandler.service.getComicsByTitleStartingWith(query.toLowerCase(), offset)
             .subscribeOn(Schedulers.io())
+            .retry(10)
+            .onErrorReturn {
+                println("error : ${it.message}")
+                ComicsDataWrapper(ComicsDataContainer(emptyList()))
+            }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe{ wrapper ->
                 adapter.comics.addAll( wrapper.data.results)
@@ -139,6 +146,11 @@ class FragmentComicList : Fragment() {
     fun getAllComics(offset: Int = 0){
         MarvelHandler.service.getAllComic(offset)
             .subscribeOn(Schedulers.io())
+            .retry(10)
+            .onErrorReturn {
+                println("error : ${it.message}")
+                ComicsDataWrapper(ComicsDataContainer(emptyList()))
+            }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { wrapper ->
                 adapter.comics.addAll( wrapper.data.results)
