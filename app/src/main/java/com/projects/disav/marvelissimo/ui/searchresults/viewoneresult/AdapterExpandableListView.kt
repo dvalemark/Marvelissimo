@@ -1,4 +1,4 @@
-package com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.character
+package com.projects.disav.marvelissimo.ui.searchresults.viewoneresult
 
 import android.content.Context
 import android.graphics.Typeface

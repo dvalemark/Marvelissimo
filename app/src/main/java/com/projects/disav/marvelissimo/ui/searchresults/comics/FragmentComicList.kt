@@ -1,6 +1,5 @@
 package com.projects.disav.marvelissimo.ui.searchresults.comics
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -12,7 +11,7 @@ import com.projects.disav.marvelissimo.MainActivity
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.comics.Comic
-import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.FragmentViewOneComic
+import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.comic.FragmentViewOneComic
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerview.view.*

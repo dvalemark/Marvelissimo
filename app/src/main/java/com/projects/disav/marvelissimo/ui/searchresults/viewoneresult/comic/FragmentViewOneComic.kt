@@ -1,4 +1,4 @@
-package com.projects.disav.marvelissimo.ui.searchresults.viewoneresult
+package com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.comic
 
 import android.content.Intent
 import android.net.Uri
@@ -14,7 +14,7 @@ import android.widget.Toast
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.comics.Comic
-import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.character.AdapterExpandableListView
+import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.AdapterExpandableListView
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -63,6 +63,7 @@ class FragmentViewOneComic: Fragment(){
                     })
                 url = comic.urls.get(0).url
                 createExpandableLv(getData(comic),expandableListView, view)
+                view.invalidate()
             }
 
         val websiteButton = view.go_to_website as Button
@@ -105,7 +106,11 @@ class FragmentViewOneComic: Fragment(){
         if (expandableListView != null) {
 
             val titleList = ArrayList(listData.keys)
-            var adapter = AdapterExpandableListView(view.context, titleList as ArrayList<String>, listData)
+            var adapter = AdapterExpandableListView(
+                view.context,
+                titleList as ArrayList<String>,
+                listData
+            )
 
             expandableListView!!.setAdapter(adapter)
 
@@ -118,22 +123,12 @@ class FragmentViewOneComic: Fragment(){
             }
 
             expandableListView!!.setOnGroupCollapseListener { groupPosition ->
-                Toast.makeText(
-                    view.context,
-                    (titleList as ArrayList<String>)[groupPosition] + " List Collapsed.",
-                    Toast.LENGTH_SHORT
-                ).show()
+
             }
 
             expandableListView!!.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
-                Toast.makeText(
-                    view.context,
-                    "Clicked: " + (titleList as ArrayList<String>)[groupPosition] + " -> " + listData[(titleList as ArrayList<String>)[groupPosition]]!!.get(
-                        childPosition
-                    ),
-                    Toast.LENGTH_SHORT
-                ).show()
-                false
+
+              true
             }
         }
     }

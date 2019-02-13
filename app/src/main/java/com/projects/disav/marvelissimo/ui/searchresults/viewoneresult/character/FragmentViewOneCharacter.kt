@@ -14,10 +14,10 @@ import android.widget.Toast
 import com.projects.disav.marvelissimo.R
 import com.projects.disav.marvelissimo.network.api.MarvelHandler
 import com.projects.disav.marvelissimo.network.api.dto.characters.Character
+import com.projects.disav.marvelissimo.ui.searchresults.viewoneresult.AdapterExpandableListView
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.one_character_view.*
 import kotlinx.android.synthetic.main.one_character_view.view.*
 
 class FragmentViewOneCharacter(): Fragment(){
@@ -106,7 +106,11 @@ class FragmentViewOneCharacter(): Fragment(){
         if (expandableListView != null) {
 
             val titleList = ArrayList(listData.keys)
-            var adapter = AdapterExpandableListView(view.context, titleList as ArrayList<String>, listData)
+            var adapter = AdapterExpandableListView(
+                view.context,
+                titleList as ArrayList<String>,
+                listData
+            )
 
             expandableListView!!.setAdapter(adapter)
 
